@@ -1,0 +1,126 @@
+openapi: 3.0.0
+info:
+  description: Basic API for managing your TODO list
+  version: "1.0.0"
+  title: TODO- MY TODO API
+  license:
+    name: MIT
+    url: 'https://choosealicense.com/licenses/mit/'
+
+paths:
+  /todos:
+    get:
+      summary: gets your TODO items
+      operationId: getTodos
+      description: Get the list of TODO items
+      parameters:
+        - in: query
+          name: date
+          description: optional query for a particular day. Not supplying a date will return today'ss todos (based on UTC)
+          required: false
+          schema:
+            type: string
+            format: date-time
+      
+      responses:
+        '200':
+          description: List of TODOs
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TodoItem'
+        '400':
+          description: 'Bad date supplied'
+    post:
+      summary: add a TODO item
+      operationId: addTodo
+      description: Add a TODO item
+      responses:
+        '201':
+          description: created
+        '400':
+          description: 'Item supplied is invalid'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TodoItem'
+        description: TODO item to add
+  /todos/{id}:
+    put:
+      summary: Update a TODO item
+      description: Updates a TODO item
+      operationId: updateTodo
+      parameters: 
+        - in: path
+          name: id
+          description: Unique Id of TODO item
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TodoItem'
+        description: TODO item to update
+      responses:
+        '200':
+          description: Update operation succeeded
+        '400':
+          description: TODO item Id does not match the one supplied in the path
+        '404':
+          description: Unable to find TODO item
+    delete:
+      summary: Delete a TODO item
+      description: Deletes a TODO item by id
+      operationId: deleteTodo
+      parameters:
+        - in: path
+          name: id
+          description: Unique Id of TODO item
+          required: true
+          schema:
+            type: string
+            format: uuid
+        
+      responses:
+        '200':
+          description: Successfully deleted TODO item
+        '404':
+          description: Unable to find TODO item
+        '400':
+          description: Invalid TODO Item Id supplied
+        
+        
+        
+    
+components:
+  schemas:
+    TodoItem:
+      type: object
+      required:
+        - id
+        - description
+        - date
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: e337a46b-6e24-45fd-a3b0-500b708f5597
+          
+        description:
+          type: string
+          example: Laundry
+          
+        date:
+          type: string
+          format: date-time
+          example: '2020-07-15T01:00:00.001Z'
+          
+        completed:
+          type: boolean
+      
