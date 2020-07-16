@@ -18,11 +18,8 @@ jobs:
       with:
         dotnet-version: 3.1.101
     - name: Install dependencies
-      run: dotnet restore
-      working-directory: /api
+      run: dotnet restore /api/api.sln
     - name: Build
-      run: dotnet build --configuration Release --no-restore
-      working-directory: /api
+      run: dotnet build /api/api.sln --configuration Release --no-restore
     - name: Test
-      working-directory: /api
-      run: dotnet test --no-restore --verbosity normal
+      run: dotnet test /api/api.sln --no-restore --verbosity normal
